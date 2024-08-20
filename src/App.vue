@@ -1,33 +1,12 @@
 <script setup>
-
-const getData = () => {
-  fetch('http://localhost:8080/',{
-    method: 'get',
-  }).then(resp => {
-    console.log(resp);
-    
-  }).catch(error => {
-    console.log(error);
-    
-  })
-}
-const getData2 = () => {
-  fetch('/api',{
-    method: 'get',
-  }).then(resp => {
-    console.log(resp);
-    
-  }).catch(error => {
-    console.log(error);
-    
-  })
-}
+import ArticleList from './components/ArticleList.vue';
 </script>
 
 <template>
-  <button @click="getData">데이터 호출</button>
-  <button @click="getData2">데이터 호출2</button>
-  <div>카운트:{{ count }}</div>
+  <RouterView></RouterView>
+  <!-- <RouterLink to="/">홈 뷰</RouterLink>
+  <br>
+  <RouterLink to="/board/list">게시글 리스트</RouterLink> -->
 </template>
 
 <style scoped>
