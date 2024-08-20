@@ -4,8 +4,13 @@ spring:
     url: ${db_url}
     username: ${db_username}
     password: ${db_password}
+  servlet:
+    multipart:
+      location: E:\attaches\
+      max-file-size: 1MB
+      max-request-size: 10MB
 
-#mybatis:
-#  config-location: classpath:mybatis/config/mybatis-config.xml
-#  mapper-locations: classpath:mybatis/mappers/*.xml
-#  type-aliases-package: com.example.board.model, com.example.board.dto
+mybatis:
+  config-location: classpath:mybatis/config/mybatis-config.xml
+  mapper-locations: classpath:mybatis/mappers/*.xml
+  type-aliases-package: com.example.board.model

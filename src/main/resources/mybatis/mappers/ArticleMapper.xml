@@ -2,136 +2,149 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.board.mapper.ArticleMapper">
 
-    <select id="selectAllArticle" resultType="Articles" parameterType="map">
-        select
+    <select id="selectArticleList" resultType="Article" parameterType="map">
+        SELECT
             c.name, a.title, a.author, a.view_count, a.post_date, a.edit_date, a.id,
-            case
-                when f.id is not null then 1
-                else 0
+            CASE
+                WHEN f.id IS NOT NULL
+                THEN 1
+                ELSE 0
             END AS with_file
-        from
-            article a join category c on a.category_id = c.id
-                    LEFT JOIN file f on a.id = f.article_id
-        where
+        FROM
+            article a INNER JOIN category c ON a.category_id = c.id
+                        LEFT JOIN file f ON a.id = f.article_id
+        WHERE
             1=1
         <if test="search.keyword != null and search.keyword != ''">
-            and
+            AND
             (title LIKE CONCAT('%', #{search.keyword}, '%')
             OR author LIKE CONCAT('%', #{search.keyword}, '%')
             OR content LIKE CONCAT('%', #{search.keyword}, '%'))
         </if>
         <if test="search.category != null and search.category != ''">
-            and a.category_id = #{search.category}
+            AND a.category_id = #{search.category}
         </if>
         <if test="search.startDate != null and search.startDate != ''">
             <if test="search.endDate != null and search.endDate != ''">
-                and a.post_date between #{search.startDate} and #{search.endDate}
+                AND a.post_date BETWEEN #{search.startDate} AND #{search.endDate}
             </if>
         </if>
-        order by a.post_date desc limit #{paging.limit} offset #{paging.offset}
+        ORDER BY a.post_date DESC limit #{paging.limit} offset #{paging.offset}
     </select>
 
     <insert id="insertArticle" parameterType="Article" useGeneratedKeys="true" keyProperty="id">
-        insert into article
+        INSERT INTO article
             (category_id, title, author, password, content)
-        values
+        VALUES
             (#{categoryId}, #{title}, #{author}, SHA2(#{password},256), #{content})
     </insert>
 
     <insert id="insertFile" parameterType="FileVo">
-        insert into file
+        INSERT INTO file
             (article_id, uuid_name, original_name, dir)
-        values
+        VALUES
             (#{articleId}, #{uuidName}, #{originalName}, #{dir})
     </insert>
 
-    <select id="selectArticleById" parameterType="int" resultType="Articles">
-        select
+    <select id="selectArticleById" parameterType="int" resultType="Article">
+        SELECT
             a.id, c.id as categoryId, c.name, title, author, password, content, view_count, post_date, edit_date
-        from
-            article a join category c on a.category_id = c.id
-        where
+        FROM
+            article a INNER JOIN category c ON a.category_id = c.id
+        WHERE
             a.id = #{articleId}
     </select>
 
     <select id="selectComments" parameterType="int" resultType="Comment">
-        select
+        SELECT
             c.id, c.article_id, c.comment, c.post_date
-        from
+        FROM
             comment c
-        where
+        WHERE
             article_id = #{articleId}
     </select>
 
     <select id="selectFiles" parameterType="int" resultType="FileVo">
-        select
-            id, article_id, uuid_name, original_name, dir from file
-        where
+        SELECT
+            id, article_id, uuid_name, original_name, dir
+        FROM
+            file
+        WHERE
             article_id = #{articleId}
     </select>
 
     <select id="selectFile" parameterType="int" resultType="FileVo">
-        select
-            id, article_id, uuid_name, original_name, dir from file
-        where
+        SELECT
+            id, article_id, uuid_name, original_name, dir
+        FROM
+            file
+        WHERE
             id = #{fileId}
     </select>
 
     <select id="countArticle" resultType="int">
-        select
+        SELECT
             count(*)
-        from
+        FROM
             article;
     </select>
 
     <select id="countArticleOption" parameterType="Search" resultType="int">
-        select
+        SELECT
             count(*)
-        from
+        FROM
             article a
-        where
+        WHERE
             1=1
         <if test="keyword != null and keyword != ''">
-            and
+            AND
             (title LIKE CONCAT('%', #{keyword}, '%')
             OR author LIKE CONCAT('%', #{keyword}, '%')
             OR content LIKE CONCAT('%', #{keyword}, '%'))
         </if>
         <if test="category != null and category != ''">
-            and a.category_id = #{category}
+            AND a.category_id = #{category}
         </if>
         <if test="startDate != null and startDate != ''">
             <if test="endDate != null and endDate != ''">
-                and a.post_date between #{startDate} and #{endDate}
+                AND a.post_date BETWEEN #{startDate} AND #{endDate}
             </if>
         </if>
     </select>
 
     <insert id="insertComment" parameterType="Comment">
-        insert into comment
+        INSERT INTO comment
             (article_id, comment)
-        values
+        VALUES
             (#{articleId}, #{comment})
     </insert>
 
     <select id="articlePasswordMatch" parameterType="Article" resultType="int">
-        select
+        SELECT
             count(id)
-        from
+        FROM
             article
-        where
-            id = #{id} and password = SHA2(#{password},256)
+        WHERE
+            id = #{id} AND password = SHA2(#{password},256)
     </select>
 
     <update id="updateArticle" parameterType="Article">
-        update article
-        set category_id = #{categoryId}, title = #{title}, author = #{author},
-            content = #{content}, edit_date = now()
-        where id = #{id}
+        UPDATE article
+        SET
+            category_id = #{categoryId},
+            title = #{title},
+            author = #{author},
+            content = #{content},
+            edit_date = now()
+        WHERE
+            id = #{id}
     </update>
 
     <delete id="deleteFile">
-        delete from file
-        where id = #{fileId}
+        DELETE
+        FROM
+            file
+        WHERE
+            id = #{fileId}
     </delete>
 </mapper>
