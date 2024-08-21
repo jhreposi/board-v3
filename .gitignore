@@ -36,3 +36,4 @@ out/
 ### VS Code ###
 .vscode/
 /build.gradle
+/src/main/resources/mybatis/config/db.properties

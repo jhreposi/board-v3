@@ -112,12 +112,21 @@
         </if>
     </select>
 
-    <insert id="insertComment" parameterType="Comment">
+    <insert id="insertComment" parameterType="Comment" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO comment
             (article_id, comment)
         VALUES
             (#{articleId}, #{comment})
     </insert>
+
+    <select id="selectCommentById" parameterType="int" resultType="Comment">
+        SELECT
+            *
+        FROM
+            comment c
+        WHERE
+            c.id = #{id}
+    </select>
 
     <select id="articlePasswordMatch" parameterType="Article" resultType="int">
         SELECT

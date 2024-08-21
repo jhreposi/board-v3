@@ -23,6 +23,7 @@ public interface ArticleMapper {
     int countArticle();
     int countArticleOption(Search search);
     int insertComment(Comment comment);
+    Comment selectCommentById(int id);
     int articlePasswordMatch(Article article);
     int updateArticle(Article article);
     int deleteFile(int fileId);

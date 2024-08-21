@@ -61,8 +61,9 @@ public class ArticleService {
     }
 
     //해당 게시글 댓글 생성
-    public void createComment(Comment comment) {
+    public int createComment(Comment comment) {
         articleMapper.insertComment(comment);
+        return comment.getId();
     }
 
     //게시글 파일 정보 생성
@@ -92,6 +93,10 @@ public class ArticleService {
                 .build();
 
         articleMapper.updateArticle(article);
+    }
+
+    public Comment getCommentById(int id) {
+        return articleMapper.selectCommentById(id);
     }
 
 }
