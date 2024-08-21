@@ -1,5 +1,6 @@
 <template>
     <h2>자유게시판 - 목록</h2>
+    <SearchBox></SearchBox>
     <table>
         <thead>
             <tr>
@@ -24,14 +25,18 @@
     <div v-if="paging">
         <Paging :lastPage="paging.lastPage"></Paging>
     </div>
+    <div>
+        <RouterLink to="/board/post">글 등록</RouterLink>
+    </div>
 </template>
 
 <script setup>
-import { boardApi } from '../api/apiInstance.js';
 import { onMounted, ref, watch } from 'vue';
+import { searchStore } from '@/store/index.js';
+import { boardApi } from '../api/apiInstance.js';
 import ArticleItem from './ArticleItem.vue';
 import Paging from './Paging.vue';
-import { searchStore } from '@/store/index.js';
+import SearchBox from './SearchBox.vue';
 
 let articles = ref([]);
 let search = null;
@@ -53,8 +58,7 @@ onMounted(() => {
 });
 
 watch(() => searchStore.search,
-    (storeSearch, oldSearch) => {
-        console.log('search watching');
+    (storeSearch) => {
         boardApi.get('/list',{
             params: {
                 pageNum: storeSearch.pageNum,

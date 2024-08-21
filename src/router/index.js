@@ -1,7 +1,8 @@
 import HomeVIew from "@/components/HomeVIew.vue";
 import ArticleDetail from "../components/ArticleDetail.vue";
 import ArticleList from "../components/ArticleList.vue";
-import { createMemoryHistory, createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
+import ArticlePost from "@/components/ArticlePost.vue";
 
 const routes = [
     {
@@ -16,10 +17,13 @@ const routes = [
         path: '/board/view/:id',
         component: ArticleDetail
     },
+    {
+        path: '/board/post',
+        component: ArticlePost
+    }
 ];
 
 const router = createRouter({
-    // history: createMemoryHistory(),
     history: createWebHistory('/'),
     routes,
 });
