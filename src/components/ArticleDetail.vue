@@ -3,18 +3,18 @@
         <h2>게시판- 보기</h2>
         <div v-if="article">
             <div>
-                <span>{{ article.author }}</span>
-                <span>{{ article.postDate }}</span>
-                <span>{{ article.editDate }}</span>
+                <span>작성자:{{ article.author }}</span>
+                <span>작성일:{{ article.postDate }}</span>
+                <span>수정일:{{ article.editDate }}</span>
             </div>
             <div>
                 <span>[{{ article.name }}]</span>
-                <span>{{ article.title }}</span>
+                <span>제목:{{ article.title }}</span>
                 <span>{{ article.viewCount }}</span>
-                <span>{{ article.viewCount }}</span>
+                조회수: <span>{{ article.viewCount }}</span>
             </div>
             <div>
-                <textarea>{{ article.content }}</textarea>
+                <div>{{ article.content }}</div>
             </div>
         </div>
 
@@ -25,8 +25,10 @@
         </div>
 
         <div>
-            <input type="text"/>
-            <button type="button">등록</button>
+            <Comment :comments="comments" :articleId="articleId"></Comment>
+        </div>
+        <div>
+            <ListButton :name="'목록'"></ListButton>
         </div>
     </div>
 </template>
@@ -35,32 +37,48 @@
 import { onMounted, ref, watch } from 'vue';
 import { boardApi } from '@/api/apiInstance';
 import { useRoute } from 'vue-router';
+import Comment from './Comment.vue';
+import ListButton from './ListButton.vue';
 
 const route = useRoute()
 const articleId = ref(0);
 let article = ref();
-let comments = ref();
-let files = ref();
+let comments = ref([]);
+let files = null;
 
-watch(
-    () => route.params.id,
-    (newId) => {
-        articleId.value = newId;
+watch(() => route.params.id,
+    (paramId) => {
+        articleId.value = paramId;
     },
-    { immediate: true }
-);
+    {immediate: true });
 
 onMounted(() => {
     boardApi.get(`/view/${articleId.value}`)
     .then(response => {
         article.value = response.data.article;
         comments.value = response.data.comments;
-        files.value = response.data.files;
-        console.log(article.value);
-        
+        files = response.data.files;
+
     }).catch(error => {
         console.log(error);
     })
 })
+
+// const createComment = () => {
+    
+//     boardApi.post('/comment',{
+//         articleId: articleId.value,
+//         comment: document.getElementById('comment').value
+
+//     }).then((response)=> {
+//         alert('댓글이 등록되었습니다')
+//         document.getElementById('comment').value = ''
+//         comments.value.push(response.data)
+
+//     }).catch((error)=> {
+//         console.log(error);
+
+//     })
+// }
 
 </script>

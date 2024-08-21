@@ -21,31 +21,58 @@
             </ArticleItem>
         </tbody>
     </table>
-
+    <div v-if="paging">
+        <Paging :lastPage="paging.lastPage"></Paging>
+    </div>
 </template>
 
 <script setup>
 import { boardApi } from '../api/apiInstance.js';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import ArticleItem from './ArticleItem.vue';
+import Paging from './Paging.vue';
+import { searchStore } from '@/store/index.js';
 
 let articles = ref([]);
-let search = ref();
-let paging = ref();
+let search = null;
+let paging = null;
     
-//마운티드 총 게시글
 onMounted(() => {
     boardApi.get('/list', {
-        params: {pageNum: 1}//임시 페이지번호
-
     }).then(response => {
         articles.value = response.data.articles;
-        paging.value = response.data.paging;
-        search.value = response.data.search;
+        paging = response.data.paging;
+        search = response.data.search;
+
+        searchStore.setSearch(search);
+        
     }).catch(error => {
         console.log(error);
     
     });
 });
+
+watch(() => searchStore.search,
+    (storeSearch, oldSearch) => {
+        console.log('search watching');
+        boardApi.get('/list',{
+            params: {
+                pageNum: storeSearch.pageNum,
+                startDate: storeSearch.startData,
+                endDate: storeSearch.endDate,
+                cateory: storeSearch.category,
+                keyword: storeSearch.keyword,
+            }
+        }).then(response => {
+            articles.value = response.data.articles
+            paging = response.data.paging
+            search = response.data.search
+            
+        }).catch(error => {
+            console.log(error);
+            
+        })
+
+}, {deep: true})
 
 </script>
