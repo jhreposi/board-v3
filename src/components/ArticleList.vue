@@ -32,14 +32,14 @@
 
 <script setup>
 import { onMounted, ref, watch } from 'vue';
-import { searchStore } from '@/store/index.js';
+import { storeSearch } from '@/store/index.js';
 import { boardApi } from '../api/apiInstance.js';
 import ArticleItem from './ArticleItem.vue';
 import Paging from './Paging.vue';
 import SearchBox from './SearchBox.vue';
 
+const searchStore = storeSearch();
 let articles = ref([]);
-let search = null;
 let paging = null;
     
 onMounted(() => {
@@ -47,9 +47,6 @@ onMounted(() => {
     }).then(response => {
         articles.value = response.data.articles;
         paging = response.data.paging;
-        search = response.data.search;
-
-        searchStore.setSearch(search);
         
     }).catch(error => {
         console.log(error);
@@ -58,19 +55,18 @@ onMounted(() => {
 });
 
 watch(() => searchStore.search,
-    (storeSearch) => {
+    (search) => {
         boardApi.get('/list',{
             params: {
-                pageNum: storeSearch.pageNum,
-                startDate: storeSearch.startData,
-                endDate: storeSearch.endDate,
-                cateory: storeSearch.category,
-                keyword: storeSearch.keyword,
+                pageNum: search.pageNum,
+                startDate: search.startDate,
+                endDate: search.endDate,
+                category: search.category,
+                keyword: search.keyword,
             }
         }).then(response => {
             articles.value = response.data.articles
             paging = response.data.paging
-            search = response.data.search
             
         }).catch(error => {
             console.log(error);

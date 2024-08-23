@@ -1,7 +1,7 @@
-import HomeVIew from "@/components/HomeVIew.vue";
-import ArticleDetail from "../components/ArticleDetail.vue";
-import ArticleList from "../components/ArticleList.vue";
 import { createRouter, createWebHistory } from 'vue-router'
+import HomeVIew from "@/components/HomeVIew.vue";
+import ArticleDetail from "@/components/ArticleDetail.vue";
+import ArticleList from "@/components/ArticleList.vue";
 import ArticlePost from "@/components/ArticlePost.vue";
 
 const routes = [

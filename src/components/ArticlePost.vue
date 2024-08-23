@@ -65,54 +65,53 @@ import router from '@/router';
         })
     }
 
-    const saveForm = document.querySelector('#saveForm');
-    const category = document.querySelector('#category');
-    const author = document.querySelector('#author');
-    const title = document.querySelector('#title');
-    const content = document.querySelector('#content');
-    const pass = document.querySelector('#pass');
-    const passCheck = document.querySelector('#passCheck')
-    const file = document.querySelector('#file');
+const saveForm = document.querySelector('#saveForm');
+const category = document.querySelector('#category');
+const author = document.querySelector('#author');
+const title = document.querySelector('#title');
+const content = document.querySelector('#content');
+const pass = document.querySelector('#pass');
+const passCheck = document.querySelector('#passCheck')
+const file = document.querySelector('#file');
 
-    function checkListConfirm() {
-        if (category.value === '0') {
-            alert('카테고리 선택은 필수 입니다')
-            return false;
-        }
-        if (lengthCheck(author, 2, 5)) {
-            alert('작성자는 3글자 이상 5글자미만으로 가능합니다')
-            return false;
-        }
-        if (pass.value !== passCheck.value) {
-            alert('비밀번호가 일치하지 않습니다')
-            return false;
-        }
-        if (!validatePassword(pass.value)) {
-            alert('비밀번호 규칙을 확인해주세요')
-            return false;
-        }
-        if (lengthCheck(title, 4, 100)) {
-            alert('제목은 4글자이상 100글자 미만으로 입력해주세요')
-            return false;
-        }
-        if (lengthCheck(content, 4, 2000)) {
-            alert('내용은 4글자이상 2000글자 미만으로 입력해주세요')
-            return false;
-        }
-        return true;
+function checkListConfirm() {
+    if (category.value === '0') {
+        alert('카테고리 선택은 필수 입니다')
+        return false;
     }
+    if (lengthCheck(author, 2, 5)) {
+        alert('작성자는 3글자 이상 5글자미만으로 가능합니다')
+        return false;
+    }
+    if (pass.value !== passCheck.value) {
+        alert('비밀번호가 일치하지 않습니다')
+        return false;
+    }
+    if (!validatePassword(pass.value)) {
+        alert('비밀번호 규칙을 확인해주세요')
+        return false;
+    }
+    if (lengthCheck(title, 4, 100)) {
+        alert('제목은 4글자이상 100글자 미만으로 입력해주세요')
+        return false;
+    }
+    if (lengthCheck(content, 4, 2000)) {
+        alert('내용은 4글자이상 2000글자 미만으로 입력해주세요')
+        return false;
+    }
+    return true;
+}
 
-    function validatePassword(password) {
-        const passwordPattern = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{4,15}$/;
-        return passwordPattern.test(password);
-    }
+function validatePassword(password) {
+    const passwordPattern = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{4,15}$/;
+    return passwordPattern.test(password);
+}
 
-    function lengthCheck(target, up, down) {
-        return target.value.length < up || target.value.length > down;
-    }
+function lengthCheck(target, up, down) {
+    return target.value.length < up || target.value.length > down;
+}
 
 
 </script>
 
-<style>
-</style>
+<style></style>
