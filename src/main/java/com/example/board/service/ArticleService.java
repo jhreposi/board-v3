@@ -21,7 +21,7 @@ public class ArticleService {
     }
 
     //페이징 빌드  getPaging 네이밍
-    public Paging getPaging(int currentPage, int totalCount) {
+    public Paging getCriteria(int currentPage, int totalCount) {
 
         Paging paging = Paging.builder()
                 .currentPage(currentPage)

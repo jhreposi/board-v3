@@ -41,7 +41,7 @@ public class ArticleController {
         log.info(search.toString());
 
         int articleCount = articleService.getArticleCountBySearch(search);
-        Paging paging = articleService.getPaging(search.getPageNum(), articleCount);
+        Paging paging = articleService.getCriteria(search.getPageNum(), articleCount);
         List<Article> articles = articleService.getArticleList(search, paging);
 
         return ResponseEntity.ok(new ArticleListResponse(articles, search, paging));
@@ -93,6 +93,7 @@ public class ArticleController {
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.CONTENT_TYPE, "application/octet-stream");
         headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"");
+        headers.add(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, "Content-Disposition");
 
         log.info("filename => {}", fileName);
         log.info("headers => {}", headers.get(HttpHeaders.CONTENT_DISPOSITION));
