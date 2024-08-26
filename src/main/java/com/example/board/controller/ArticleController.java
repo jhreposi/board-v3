@@ -7,13 +7,15 @@ import com.example.board.model.Search;
 import com.example.board.service.ArticleService;
 import com.example.board.service.FileService;
 import com.example.board.util.Paging;
+import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.List;
 
+@Slf4j
 @RestController
 @CrossOrigin("http://localhost:3000/")
 @RequestMapping("/api/board")
@@ -29,8 +31,9 @@ public class ArticleController {
     public record ArticleOneResponse(Article article, List<Comment> comments, List<FileVo> files) {}
 
     @GetMapping("/list")
-    public ResponseEntity<ArticleListResponse> getArticles(Search search) {
-        System.out.println(search.toString());
+    public ResponseEntity<ArticleListResponse> getArticles(@ModelAttribute Search search) {
+        search.defaultSearchValue();
+        log.info(search.toString());
         int articleCount = articleService.getArticleCountBySearch(search);
         Paging paging = articleService.getPaging(search.getPageNum(), articleCount);
         List<Article> articles = articleService.getArticleList(search, paging);
@@ -51,14 +54,14 @@ public class ArticleController {
     @PostMapping("/comment")
     public ResponseEntity<Comment> createComment(@RequestBody Comment comment) {
         int createdCommentId = articleService.createComment(comment);
-        System.out.println(createdCommentId);
         Comment getComment = articleService.getCommentById(createdCommentId);
+
         return ResponseEntity.ok(getComment);
     }
 
     @PostMapping("/write")
-    public ResponseEntity<Integer> createArticle(@ModelAttribute Article article,
-                              @RequestPart("files") MultipartFile[] multipartFiles) throws IOException, URISyntaxException {
+    public ResponseEntity<Integer> createArticle(@Valid @ModelAttribute Article article,
+                              @RequestPart("files") MultipartFile[] multipartFiles) throws IOException {
         int createdArticleId = articleService.createArticle(article);
         List<FileVo> uploadedFileInfo = fileService.uploadFiles(multipartFiles);
         articleService.createFileList(uploadedFileInfo, createdArticleId);

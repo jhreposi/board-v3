@@ -82,7 +82,7 @@ public class ArticleService {
         return matchCount != 0;
     }
 
-    //수정 요청 게시글 게
+    //수정 요청 게시글
     public void modifyArticle(ModifyArticle modifyArticle) {
         Article article = Article.builder()
                 .id(modifyArticle.getId())

@@ -14,3 +14,7 @@ mybatis:
   config-location: classpath:mybatis/config/mybatis-config.xml
   mapper-locations: classpath:mybatis/mappers/*.xml
   type-aliases-package: com.example.board.model
+
+#logging:
+#  level:
+#    org.mybatis: info
