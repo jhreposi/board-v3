@@ -1,9 +1,9 @@
 <template>
     <div>
-        <form id="saveForm" enctype="multipart/form-data">
+        <form id="saveForm" ref="saveForm" enctype="multipart/form-data">
             <div class="form-row">
                 <label for="category">카테고리</label>
-                <select name="categoryId" id="category">
+                <select name="categoryId" v-model="category">
                     <option value=0>카테고리 선택</option>
                     <option value="1">자유</option>
                     <option value="2">일상</option>
@@ -15,23 +15,23 @@
 
             <div class="form-row">
                 <label for="author">작성자</label>
-                <input type="text" name="author" id="author"/>
+                <input type="text" name="author" id="author" v-model="author"/>
             </div>
 
             <div class="form-row">
                 <label for="pass">비밀번호</label>
-                <input type="password" name="password" id="pass" placeholder="4이상 16미만,영문/특수/숫자포함">
+                <input type="password" name="password" id="pass" v-model="pass" placeholder="4이상 16미만,영문/특수/숫자포함">
                 <input type="password" id="passCheck">
             </div>
 
             <div class="form-row">
                 <label for="title">제목</label>
-                <input type="text" name="title" id="title">
+                <input type="text" name="title" id="title" v-model="title">
             </div>
 
             <div class="form-row">
                 <label for="content">내용</label>
-                <input type="text" name="content" id="content">
+                <input type="text" name="content" id="content" v-model="content">
             </div>
 
             <div class="form-row">
@@ -51,27 +51,29 @@
 import { boardApi } from '@/api/apiInstance';
 import { errorAlert } from '@/api/errorAlert';
 import router from '@/router';
+import { ref } from 'vue';
 
-    const ArticleCreate = () => {
-        boardApi.post('/write',
-            new FormData(document.getElementById('saveForm'))
-        ).then(resp => {
-            alert('게시글이 등록되었습니다')
-            router.push('/board/view/' + resp.data)
+//게시글 등록
+const ArticleCreate = () => {
+    //axios변경시 불편, 감추기,
+    boardApi.post('/write',
+        new FormData(document.getElementById('saveForm'))
 
-        }).catch(error => {
-            errorAlert(error);
-        })
-    }
+    ).then(resp => {
+        alert('게시글이 등록되었습니다')
+        router.push('/board/view/' + resp.data)
 
-const saveForm = document.querySelector('#saveForm');
-const category = document.querySelector('#category');
-const author = document.querySelector('#author');
-const title = document.querySelector('#title');
-const content = document.querySelector('#content');
-const pass = document.querySelector('#pass');
-const passCheck = document.querySelector('#passCheck')
-const file = document.querySelector('#file');
+    }).catch(error => {
+        errorAlert(error);
+    })
+}
+const saveForm = ref(null);
+const category = ref('');
+const author = ref('');
+const title = ref('');
+const content = ref('');
+const pass = ref('');
+const passCheck = ref('');
 
 function checkListConfirm() {
     if (category.value === '0') {

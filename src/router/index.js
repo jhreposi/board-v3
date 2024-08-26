@@ -7,10 +7,6 @@ import NotFound from '@/components/NotFound.vue';
 
 const routes = [
     {
-        path: '/:pathMatch(.*)*',  // "catch-all" 경로
-        component: NotFound
-    },
-    {
         path: '/',
         component: HomeVIew
     },
@@ -25,7 +21,11 @@ const routes = [
     {
         path: '/board/post',
         component: ArticlePost
-    }
+    },
+    {
+        path: '/:pathMatch(.*)*',
+        component: NotFound
+    },
 ];
 
 const router = createRouter({

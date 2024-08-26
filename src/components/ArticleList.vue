@@ -22,7 +22,7 @@
             </ArticleItem>
         </tbody>
     </table>
-    <div v-if="paging">
+    <div v-if="paging" style="margin-left: 30%;">
         <Paging :lastPage="paging.lastPage"></Paging>
     </div>
     <div>
@@ -37,6 +37,7 @@ import { boardApi } from '../api/apiInstance.js';
 import ArticleItem from './ArticleItem.vue';
 import Paging from './Paging.vue';
 import SearchBox from './SearchBox.vue';
+import router from '@/router/index.js';
 
 const searchStore = storeSearch();
 let articles = ref([]);
@@ -54,8 +55,10 @@ onMounted(() => {
     });
 });
 
+//조건을 변경해서 검색 누를시   queryString으로
 watch(() => searchStore.search,
     (search) => {
+        
         boardApi.get('/list',{
             params: {
                 pageNum: search.pageNum,
@@ -67,12 +70,25 @@ watch(() => searchStore.search,
         }).then(response => {
             articles.value = response.data.articles
             paging = response.data.paging
+
+            router.push({
+                path: '/board/list',
+                query: {
+                pageNum: search.pageNum,
+                startDate: search.startDate,
+                endDate: search.endDate,
+                category: search.category,
+                keyword: search.keyword,
+                }
+            });
             
         }).catch(error => {
             console.log(error);
             
         })
+        
 
 }, {deep: true})
+
 
 </script>

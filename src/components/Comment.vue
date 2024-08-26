@@ -17,6 +17,7 @@
         articleId: String,
     })
 
+    //댓글 등록시
     const createComment = () => {
         
         boardApi.post('/comment',{

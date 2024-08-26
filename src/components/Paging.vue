@@ -1,6 +1,9 @@
 <template>
     <div>
-        <span v-for="currentPage in lastPage" :key="currentPage" @click="currentPageValue(currentPage)">
+        <span v-for="currentPage in lastPage" :key="currentPage"
+                @click="currentPageValue(currentPage)"
+                style="margin: 5px 5px;"
+                >
             {{ currentPage }}
         </span>
     </div>
