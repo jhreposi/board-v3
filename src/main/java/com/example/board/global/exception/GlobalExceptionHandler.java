@@ -17,6 +17,12 @@ public class GlobalExceptionHandler {
 
         return handleExceptionResult(ApiResponseCode.POST_VALIDATION_FAILED);
     }
+    //보내줄 exception아님
+    @ExceptionHandler(java.io.UnsupportedEncodingException.class)
+    protected ResponseEntity<ErrorResponse> UnsupportedEncodingException(java.io.UnsupportedEncodingException e) {
+
+        return handleExceptionResult(ApiResponseCode.UNSUPPORTED_ENCODING);
+    }
 
     private ResponseEntity<ErrorResponse> handleExceptionResult(ApiResponseCode responseCode) {
 

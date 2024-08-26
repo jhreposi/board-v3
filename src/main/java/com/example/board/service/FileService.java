@@ -56,29 +56,19 @@ public class FileService {
         return files;
     }
 
-    public ResponseEntity<Resource> downloadFile(int fileId) {
-        FileVo fileInfo = articleMapper.selectFile(fileId);
+    public Resource downloadFile(FileVo fileInfo) {
         String filePath = fileInfo.getDir() + fileInfo.getUuidName();
-        String fileName = null;
+        File downloadFile = new File(filePath);
+        Resource resource = new FileSystemResource(downloadFile);
 
-        try {
-            fileName = fileNameEncoder(fileInfo.getOriginalName());
-            File downloadFile = new File(filePath);
-            Resource resource = new FileSystemResource(downloadFile);
-
-            if (!resource.exists()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-            }
-            return ResponseEntity.ok()
-                    .header(HttpHeaders.CONTENT_TYPE, "application/octet-stream")
-                    .header(HttpHeaders.CONTENT_DISPOSITION , "attachment; filename=\"" + fileName + "\"")
-                    .body(resource);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
+        return resource;
     }
 
-    String fileNameEncoder(String fileName) throws UnsupportedEncodingException {
+    public FileVo getFileInfo(int fileId) {
+        return articleMapper.selectFile(fileId);
+    }
+
+    public String fileNameEncoder(String fileName) throws UnsupportedEncodingException {
         return URLEncoder.encode(fileName, StandardCharsets.UTF_8.toString())
                 .replaceAll("\\+", "%20");
     }

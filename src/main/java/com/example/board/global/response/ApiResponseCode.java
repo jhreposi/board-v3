@@ -7,7 +7,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum ApiResponseCode {
     OK(200, "E200", "요청이 처리되었습니다"),
-    POST_VALIDATION_FAILED(400, "POST_VALIDATION_FAILED", "입력조건이 맞지 않습니다")
+    POST_VALIDATION_FAILED(400, "POST_VALIDATION_FAILED", "입력조건이 맞지 않습니다"),
+    UNSUPPORTED_ENCODING(500, "UNSUPPORTED_ENCODING", "인코딩 오류 발생")
     ;
 
     private int status;
