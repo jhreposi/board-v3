@@ -49,6 +49,7 @@
 
 <script setup>
 import { boardApi } from '@/api/apiInstance';
+import { errorAlert } from '@/api/errorAlert';
 import router from '@/router';
 
     const ArticleCreate = () => {
@@ -56,12 +57,10 @@ import router from '@/router';
             new FormData(document.getElementById('saveForm'))
         ).then(resp => {
             alert('게시글이 등록되었습니다')
-            // location.href = '/board/view/' + resp.data
             router.push('/board/view/' + resp.data)
 
         }).catch(error => {
-            console.log(error);
-            
+            errorAlert(error);
         })
     }
 
