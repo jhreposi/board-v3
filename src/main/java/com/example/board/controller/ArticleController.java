@@ -1,9 +1,6 @@
 package com.example.board.controller;
 
-import com.example.board.model.Article;
-import com.example.board.model.Comment;
-import com.example.board.model.FileVo;
-import com.example.board.model.Search;
+import com.example.board.model.*;
 import com.example.board.service.ArticleService;
 import com.example.board.service.FileService;
 import com.example.board.util.Paging;
@@ -38,7 +35,7 @@ public class ArticleController {
     @GetMapping("/list")
     public ResponseEntity<ArticleListResponse> getArticles(@ModelAttribute Search search) {
         search.defaultSearchValue();
-        log.info(search.toString());
+        log.info("search => {}", search.toString());
 
         int articleCount = articleService.getArticleCountBySearch(search);
         Paging paging = articleService.getCriteria(search.getPageNum(), articleCount);
@@ -55,6 +52,7 @@ public class ArticleController {
         Article article = articleService.getArticleOne(articleId);
         List<Comment> comments = articleService.getArticleComment(articleId);
         List<FileVo> files = articleService.getArticleFiles(articleId);
+        articleService.modifyViewCount(articleId);
 
         return ResponseEntity.ok(new ArticleOneResponse(article, comments, files));
     }
@@ -99,6 +97,14 @@ public class ArticleController {
         log.info("headers => {}", headers.get(HttpHeaders.CONTENT_DISPOSITION));
 
         return new ResponseEntity<>(resource, headers, HttpStatus.OK);
+    }
+
+    @PutMapping("modify")
+    public ResponseEntity<?> modifyArticle(ModifyArticle modifyArticle) {
+        articleService.modifyArticle(modifyArticle);
+        fileService.removeFiles(modifyArticle.getRemoveFiles());
+
+        return ResponseEntity.ok(null);
     }
 
 }

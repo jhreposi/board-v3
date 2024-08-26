@@ -156,4 +156,13 @@
         WHERE
             id = #{fileId}
     </delete>
+
+    <insert id="updateViewCount">
+        UPDATE
+            article
+        SET
+            view_count = view_count + 1
+        WHERE
+            id = #{articleId}
+    </insert>
 </mapper>

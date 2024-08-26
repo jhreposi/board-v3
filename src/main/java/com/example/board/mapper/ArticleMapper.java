@@ -27,5 +27,6 @@ public interface ArticleMapper {
     int articlePasswordMatch(Article article);
     int updateArticle(Article article);
     int deleteFile(int fileId);
+    void updateViewCount(int articleId);
 
 }

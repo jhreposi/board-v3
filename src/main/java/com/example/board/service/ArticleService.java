@@ -99,4 +99,9 @@ public class ArticleService {
         return articleMapper.selectCommentById(id);
     }
 
+    //조회수 증가
+    public void modifyViewCount(int articleId) {
+        articleMapper.updateViewCount(articleId);
+    }
+
 }

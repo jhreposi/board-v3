@@ -18,6 +18,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 @Service
@@ -71,5 +72,11 @@ public class FileService {
     public String fileNameEncoder(String fileName) throws UnsupportedEncodingException {
         return URLEncoder.encode(fileName, StandardCharsets.UTF_8.toString())
                 .replaceAll("\\+", "%20");
+    }
+    //파일id로 게시글 맵핑 삭제
+    public void removeFiles(int [] fileIds) {
+        Arrays.stream(fileIds).forEach(fileId -> {
+            articleMapper.deleteFile(fileId);
+        });
     }
 }
