@@ -38,10 +38,10 @@ public class ArticleController {
         log.info("search => {}", search.toString());
 
         int articleCount = articleService.getArticleCountBySearch(search);
-        Paging paging = articleService.getCriteria(search.getPageNum(), articleCount);
-        List<Article> articles = articleService.getArticleList(search, paging);
+        Paging pagingCriteria = articleService.getCriteria(search.getPageNum(), articleCount);
+        List<Article> articles = articleService.getArticleList(search, pagingCriteria);
 
-        return ResponseEntity.ok(new ArticleListResponse(articles, search, paging));
+        return ResponseEntity.ok(new ArticleListResponse(articles, search, pagingCriteria));
     }
 
     //게시글 단일 글  rest docs
@@ -99,12 +99,26 @@ public class ArticleController {
         return new ResponseEntity<>(resource, headers, HttpStatus.OK);
     }
 
-    @PutMapping("modify")
-    public ResponseEntity<?> modifyArticle(ModifyArticle modifyArticle) {
+    /**
+     * 게시글 수정
+     * 비밀번호 정보 안맞을시 에러반환
+     * 게시글 정보 수정, 파일관계 제거
+     * @param modifyArticle
+     * @return
+     */
+    @PutMapping("/modify")
+    public ResponseEntity<String> modifyArticle(@RequestBody ModifyArticle modifyArticle) {
+        log.info("article Info => {}", modifyArticle);
+        Article passwordInfo = Article.builder()
+                                .id(modifyArticle.getId())
+                                .password(modifyArticle.getPassword())
+                                .build();
+
+        articleService.passwordMatchConfirm(passwordInfo);
         articleService.modifyArticle(modifyArticle);
         fileService.removeFiles(modifyArticle.getRemoveFiles());
 
-        return ResponseEntity.ok(null);
+        return ResponseEntity.ok("게시글이 수정되었습니다");
     }
 
 }

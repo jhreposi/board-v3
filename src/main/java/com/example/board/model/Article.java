@@ -15,6 +15,7 @@ import lombok.*;
 public class Article {
     private String name; //category name
     private int id;
+    @Size(min = 1)
     private int categoryId;
 
     @NotEmpty

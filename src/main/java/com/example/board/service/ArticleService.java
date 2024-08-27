@@ -1,5 +1,6 @@
 package com.example.board.service;
 
+import com.example.board.global.exception.PasswordNotMatched;
 import com.example.board.mapper.ArticleMapper;
 import com.example.board.model.*;
 import com.example.board.util.Paging;
@@ -77,9 +78,11 @@ public class ArticleService {
     }
 
     //사용자 입력 비밀번호와 게시글 비밀번호 일치 확인
-    public boolean passwordMatchConfirm(Article article) {
+    public void passwordMatchConfirm(Article article) {
         int matchCount =  articleMapper.articlePasswordMatch(article);
-        return matchCount != 0;
+        if (matchCount == 0) {
+            throw new PasswordNotMatched();
+        }
     }
 
     //수정 요청 게시글

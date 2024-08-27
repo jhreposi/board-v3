@@ -2,6 +2,7 @@ package com.example.board.global.exception;
 
 import com.example.board.global.response.ApiResponseCode;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -17,11 +18,11 @@ public class GlobalExceptionHandler {
 
         return handleExceptionResult(ApiResponseCode.POST_VALIDATION_FAILED);
     }
-    //보내줄 exception아님
-    @ExceptionHandler(java.io.UnsupportedEncodingException.class)
-    protected ResponseEntity<ErrorResponse> UnsupportedEncodingException(java.io.UnsupportedEncodingException e) {
 
-        return handleExceptionResult(ApiResponseCode.UNSUPPORTED_ENCODING);
+    @ExceptionHandler(PasswordNotMatched.class)
+    protected ResponseEntity<ErrorResponse> passwordNotMatchedException(PasswordNotMatched e) {
+        log.info("passwordNotMatchedException 실행");
+        return handleExceptionResult(ApiResponseCode.NOT_MATCHED);
     }
 
     private ResponseEntity<ErrorResponse> handleExceptionResult(ApiResponseCode responseCode) {

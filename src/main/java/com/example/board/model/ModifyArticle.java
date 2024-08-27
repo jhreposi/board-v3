@@ -16,6 +16,6 @@ public class ModifyArticle {
     private String author;
     private String content;
 
-    private int [] removeFiles;
+    private int[] removeFiles;
 
 }
