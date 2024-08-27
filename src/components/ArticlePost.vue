@@ -4,7 +4,7 @@
             <div class="form-row">
                 <label for="category">카테고리</label>
                 <select name="categoryId" v-model="category">
-                    <option value=0>카테고리 선택</option>
+                    <option value="">카테고리 선택</option>
                     <option value="1">자유</option>
                     <option value="2">일상</option>
                     <option value="3">음악</option>
@@ -55,6 +55,9 @@ import { ref } from 'vue';
 
 //게시글 등록
 const ArticleCreate = () => {
+    if (!checkListConfirm()) {
+        return;
+    }
     //axios변경시 불편, 감추기,
     boardApi.post('/write',
         new FormData(document.getElementById('saveForm'))
@@ -76,7 +79,7 @@ const pass = ref('');
 const passCheck = ref('');
 
 function checkListConfirm() {
-    if (category.value === '0') {
+    if (category.value === '') {
         alert('카테고리 선택은 필수 입니다')
         return false;
     }
