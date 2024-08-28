@@ -25,6 +25,22 @@ public class GlobalExceptionHandler {
         return handleExceptionResult(ApiResponseCode.NOT_MATCHED);
     }
 
+    @ExceptionHandler(NoContentException.class)
+    protected ResponseEntity<ErrorResponse> noContentException(NoContentException e) {
+        ErrorResponse response = ErrorResponse.builder()
+                .status(HttpStatus.NO_CONTENT.value())
+                .message(e.getMessage())
+                .code("NO CONTENT")
+                .build();
+        return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(RuntimeException.class)
+    protected void test2(RuntimeException e) {
+        log.info("runtime msg => {}", e.getLocalizedMessage());
+    }
+
+
     private ResponseEntity<ErrorResponse> handleExceptionResult(ApiResponseCode responseCode) {
 
         return ResponseEntity

@@ -1,5 +1,6 @@
 package com.example.board.service;
 
+import com.example.board.global.exception.NoContentException;
 import com.example.board.global.exception.PasswordNotMatched;
 import com.example.board.mapper.ArticleMapper;
 import com.example.board.model.*;
@@ -38,7 +39,11 @@ public class ArticleService {
 
     //해당 게시글 정보
     public Article getArticleOne(int articleId) {
-        return articleMapper.selectArticleById(articleId);
+        Article article = articleMapper.selectArticleById(articleId);
+        if (article == null) {
+            throw new NoContentException("존재하지 않는 게시글 입니다");
+        }
+        return article;
 
     }
 
@@ -79,8 +84,8 @@ public class ArticleService {
 
     //사용자 입력 비밀번호와 게시글 비밀번호 일치 확인
     public void passwordMatchConfirm(Article article) {
-        int matchCount =  articleMapper.articlePasswordMatch(article);
-        if (matchCount == 0) {
+        boolean invalidPassword =  articleMapper.articlePasswordMatch(article) == 0;
+        if (invalidPassword) {
             throw new PasswordNotMatched();
         }
     }

@@ -21,6 +21,7 @@
     <logger name="jdbc.sqlonly" level="INFO" appender-ref="console-infolog" />
     <logger name="jdbc.resultsettable" level="INFO" appender-ref="console-infolog" />
 
+    <logger name="com.example.board.mapper.ArticleMapper" level="DEBUG"></logger>
     <!-- Exception Handling 관련 로거 추가 -->
     <logger name="org.springframework.web" level="ERROR" />
     <logger name="org.springframework.boot.autoconfigure.web" level="ERROR" />

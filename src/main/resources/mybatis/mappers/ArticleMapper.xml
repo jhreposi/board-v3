@@ -171,7 +171,7 @@
         FROM
             comment
         WHERE
-            id = #{articleId}
+            article_id = #{articleId}
     </delete>
 
     <delete id="deleteFiles" parameterType="int">
@@ -179,7 +179,7 @@
         FROM
             file
         WHERE
-            id = #{articleId}
+            article_id = #{articleId}
     </delete>
 
     <delete id="deleteArticle" parameterType="int">
