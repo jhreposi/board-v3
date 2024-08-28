@@ -121,4 +121,14 @@ public class ArticleController {
         return ResponseEntity.ok("게시글이 수정되었습니다");
     }
 
+    @DeleteMapping("/")
+    public ResponseEntity<?> removeArticle(@RequestBody Article article) {
+        articleService.passwordMatchConfirm(article);
+        articleService.removeComments(article);
+        articleService.removeFiles(article);
+        articleService.removeArticle(article);
+
+        return ResponseEntity.ok("게시글이 삭제되었습니다");
+    }
+
 }

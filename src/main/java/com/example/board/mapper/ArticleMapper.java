@@ -28,5 +28,8 @@ public interface ArticleMapper {
     int updateArticle(Article article);
     int deleteFile(int fileId);
     void updateViewCount(int articleId);
+    void deleteComments(int articleId);
+    void deleteFiles(int articleId);
+    void deleteArticle(int articleId);
 
 }

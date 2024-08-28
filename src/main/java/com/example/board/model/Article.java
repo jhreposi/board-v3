@@ -1,9 +1,6 @@
 package com.example.board.model;
 
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.*;
 
 @Getter
@@ -15,7 +12,7 @@ import lombok.*;
 public class Article {
     private String name; //category name
     private int id;
-    @Size(min = 1)
+    @DecimalMin(value = "1")
     private int categoryId;
 
     @NotEmpty

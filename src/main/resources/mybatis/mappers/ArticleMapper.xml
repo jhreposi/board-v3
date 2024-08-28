@@ -165,4 +165,28 @@
         WHERE
             id = #{articleId}
     </insert>
+
+    <delete id="deleteComments" parameterType="int">
+        DELETE
+        FROM
+            comment
+        WHERE
+            id = #{articleId}
+    </delete>
+
+    <delete id="deleteFiles" parameterType="int">
+        DELETE
+        FROM
+            file
+        WHERE
+            id = #{articleId}
+    </delete>
+
+    <delete id="deleteArticle" parameterType="int">
+        DELETE
+        FROM
+            article
+        WHERE
+            id = #{articleId}
+    </delete>
 </mapper>

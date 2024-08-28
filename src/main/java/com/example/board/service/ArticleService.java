@@ -107,4 +107,19 @@ public class ArticleService {
         articleMapper.updateViewCount(articleId);
     }
 
+    //게시글 삭제시 댓글삭제
+    public void removeComments(Article article) {
+        articleMapper.deleteComments(article.getId());
+    }
+
+    //게시글 삭제시 파일정보삭제
+    public void removeFiles(Article article) {
+        articleMapper.deleteFiles(article.getId());
+    }
+
+    //게시글 삭제
+    public void removeArticle(Article article) {
+        articleMapper.deleteArticle(article.getId());
+    }
+
 }
