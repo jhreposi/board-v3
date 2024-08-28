@@ -17,20 +17,34 @@ public class Search {
     private String category;
     private String keyword;
 
+
     public Search(int pageNum, String startDate, String endDate, String category, String keyword) {
         this.pageNum = pageNum;
         this.startDate = startDate;
         this.endDate = endDate;
         this.category = category;
         this.keyword = keyword;
-        defaultStartDate(this.startDate);
-        defaultEndDate(this.endDate);
-        defaultPageNum(this.pageNum);
-        //공백 제거
+    }
+
+
+    public Search() {
+        this.pageNum = 1;
+        this.startDate = "";
+        this.endDate = "";
+        this.category = "";
+        this.keyword = "";
+    }
+
+
+    public void defaultSearchValue() {
+        this.startDate = defaultStartDate(this.startDate);
+        this.endDate = defaultEndDate(this.endDate);
+        this.pageNum = defaultPageNum(this.pageNum);
         if (!StringUtil.isNullOrEmpty(this.keyword)) {
             this.keyword.trim();
         }
     }
+
     private String defaultStartDate(String startDate) {
         if (StringUtil.isNullOrEmpty(startDate)) {
             return LocalDate.now().minusYears(1).toString();

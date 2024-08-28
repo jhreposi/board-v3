@@ -1,5 +1,7 @@
 package com.example.board.service;
 
+import com.example.board.global.exception.NoContentException;
+import com.example.board.global.exception.PasswordNotMatched;
 import com.example.board.mapper.ArticleMapper;
 import com.example.board.model.*;
 import com.example.board.util.Paging;
@@ -20,8 +22,8 @@ public class ArticleService {
         return articleMapper.countArticleOption(search);
     }
 
-    //페이징 빌드
-    public Paging getPaging(int currentPage, int totalCount) {
+    //페이징 빌드  getPaging 네이밍
+    public Paging getCriteria(int currentPage, int totalCount) {
 
         Paging paging = Paging.builder()
                 .currentPage(currentPage)
@@ -37,7 +39,11 @@ public class ArticleService {
 
     //해당 게시글 정보
     public Article getArticleOne(int articleId) {
-        return articleMapper.selectArticleById(articleId);
+        Article article = articleMapper.selectArticleById(articleId);
+        if (article == null) {
+            throw new NoContentException("존재하지 않는 게시글 입니다");
+        }
+        return article;
 
     }
 
@@ -61,8 +67,9 @@ public class ArticleService {
     }
 
     //해당 게시글 댓글 생성
-    public void createComment(Comment comment) {
+    public int createComment(Comment comment) {
         articleMapper.insertComment(comment);
+        return comment.getId();
     }
 
     //게시글 파일 정보 생성
@@ -76,12 +83,14 @@ public class ArticleService {
     }
 
     //사용자 입력 비밀번호와 게시글 비밀번호 일치 확인
-    public boolean passwordMatchConfirm(Article article) {
-        int matchCount =  articleMapper.articlePasswordMatch(article);
-        return matchCount != 0;
+    public void passwordMatchConfirm(Article article) {
+        boolean invalidPassword =  articleMapper.articlePasswordMatch(article) == 0;
+        if (invalidPassword) {
+            throw new PasswordNotMatched();
+        }
     }
 
-    //수정 요청 게시글 게
+    //수정 요청 게시글
     public void modifyArticle(ModifyArticle modifyArticle) {
         Article article = Article.builder()
                 .id(modifyArticle.getId())
@@ -92,6 +101,30 @@ public class ArticleService {
                 .build();
 
         articleMapper.updateArticle(article);
+    }
+
+    public Comment getCommentById(int id) {
+        return articleMapper.selectCommentById(id);
+    }
+
+    //조회수 증가
+    public void modifyViewCount(int articleId) {
+        articleMapper.updateViewCount(articleId);
+    }
+
+    //게시글 삭제시 댓글삭제
+    public void removeComments(Article article) {
+        articleMapper.deleteComments(article.getId());
+    }
+
+    //게시글 삭제시 파일정보삭제
+    public void removeFiles(Article article) {
+        articleMapper.deleteFiles(article.getId());
+    }
+
+    //게시글 삭제
+    public void removeArticle(Article article) {
+        articleMapper.deleteArticle(article.getId());
     }
 
 }

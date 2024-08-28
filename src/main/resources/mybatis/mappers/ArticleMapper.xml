@@ -112,12 +112,21 @@
         </if>
     </select>
 
-    <insert id="insertComment" parameterType="Comment">
+    <insert id="insertComment" parameterType="Comment" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO comment
             (article_id, comment)
         VALUES
             (#{articleId}, #{comment})
     </insert>
+
+    <select id="selectCommentById" parameterType="int" resultType="Comment">
+        SELECT
+            *
+        FROM
+            comment c
+        WHERE
+            c.id = #{id}
+    </select>
 
     <select id="articlePasswordMatch" parameterType="Article" resultType="int">
         SELECT
@@ -146,5 +155,38 @@
             file
         WHERE
             id = #{fileId}
+    </delete>
+
+    <insert id="updateViewCount">
+        UPDATE
+            article
+        SET
+            view_count = view_count + 1
+        WHERE
+            id = #{articleId}
+    </insert>
+
+    <delete id="deleteComments" parameterType="int">
+        DELETE
+        FROM
+            comment
+        WHERE
+            article_id = #{articleId}
+    </delete>
+
+    <delete id="deleteFiles" parameterType="int">
+        DELETE
+        FROM
+            file
+        WHERE
+            article_id = #{articleId}
+    </delete>
+
+    <delete id="deleteArticle" parameterType="int">
+        DELETE
+        FROM
+            article
+        WHERE
+            id = #{articleId}
     </delete>
 </mapper>

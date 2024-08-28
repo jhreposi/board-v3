@@ -6,9 +6,6 @@ import com.example.board.util.StringUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,6 +15,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 @Service
@@ -30,6 +28,7 @@ public class FileService {
         this.articleMapper = articleMapper;
     }
 
+    //multipartFile 업로드 후 저장소에 저장할 객체 반환
     public List<FileVo> uploadFiles(MultipartFile[] multipartFiles) throws IOException {
         MultipartFile[] requestFiles = multipartFiles;
         List<FileVo> files = new ArrayList<>();
@@ -56,30 +55,30 @@ public class FileService {
         return files;
     }
 
-    public ResponseEntity<Resource> downloadFile(int fileId) {
-        FileVo fileInfo = articleMapper.selectFile(fileId);
+    //파일 정보로 다운로드자원 반환
+    public Resource downloadFile(FileVo fileInfo) {
         String filePath = fileInfo.getDir() + fileInfo.getUuidName();
-        String fileName = null;
+        File downloadFile = new File(filePath);
+        Resource resource = new FileSystemResource(downloadFile);
 
-        try {
-            fileName = fileNameEncoder(fileInfo.getOriginalName());
-            File downloadFile = new File(filePath);
-            Resource resource = new FileSystemResource(downloadFile);
-
-            if (!resource.exists()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-            }
-            return ResponseEntity.ok()
-                    .header(HttpHeaders.CONTENT_TYPE, "application/octet-stream")
-                    .header(HttpHeaders.CONTENT_DISPOSITION , "attachment; filename=\"" + fileName + "\"")
-                    .body(resource);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
+        return resource;
     }
 
-    String fileNameEncoder(String fileName) throws UnsupportedEncodingException {
+    //파일 id로 해당 파일 정보
+    public FileVo getFileInfo(int fileId) {
+        return articleMapper.selectFile(fileId);
+    }
+
+    //파일이름 url 인코딩
+    public String fileNameEncoder(String fileName) throws UnsupportedEncodingException {
         return URLEncoder.encode(fileName, StandardCharsets.UTF_8.toString())
                 .replaceAll("\\+", "%20");
+    }
+    
+    //파일id로 게시글 맵핑 삭제
+    public void removeFiles(int[] fileIds) {
+        Arrays.stream(fileIds).forEach(fileId -> {
+            articleMapper.deleteFile(fileId);
+        });
     }
 }
