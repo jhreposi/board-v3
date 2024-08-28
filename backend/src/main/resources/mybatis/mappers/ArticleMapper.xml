@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.board.mapper.ArticleMapper">
+
+    <select id="selectArticleList" resultType="Article" parameterType="map">
+        SELECT
+            c.name, a.title, a.author, a.view_count, a.post_date, a.edit_date, a.id,
+            CASE
+                WHEN f.id IS NOT NULL
+                THEN 1
+                ELSE 0
+            END AS with_file
+        FROM
+            article a INNER JOIN category c ON a.category_id = c.id
+                        LEFT JOIN file f ON a.id = f.article_id
+        WHERE
+            1=1
+        <if test="search.keyword != null and search.keyword != ''">
+            AND
+            (title LIKE CONCAT('%', #{search.keyword}, '%')
+            OR author LIKE CONCAT('%', #{search.keyword}, '%')
+            OR content LIKE CONCAT('%', #{search.keyword}, '%'))
+        </if>
+        <if test="search.category != null and search.category != ''">
+            AND a.category_id = #{search.category}
+        </if>
+        <if test="search.startDate != null and search.startDate != ''">
+            <if test="search.endDate != null and search.endDate != ''">
+                AND a.post_date BETWEEN #{search.startDate} AND #{search.endDate}
+            </if>
+        </if>
+        ORDER BY a.post_date DESC limit #{paging.limit} offset #{paging.offset}
+    </select>
+
+    <insert id="insertArticle" parameterType="Article" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO article
+            (category_id, title, author, password, content)
+        VALUES
+            (#{categoryId}, #{title}, #{author}, SHA2(#{password},256), #{content})
+    </insert>
+
+    <insert id="insertFile" parameterType="FileVo">
+        INSERT INTO file
+            (article_id, uuid_name, original_name, dir)
+        VALUES
+            (#{articleId}, #{uuidName}, #{originalName}, #{dir})
+    </insert>
+
+    <select id="selectArticleById" parameterType="int" resultType="Article">
+        SELECT
+            a.id, c.id as categoryId, c.name, title, author, password, content, view_count, post_date, edit_date
+        FROM
+            article a INNER JOIN category c ON a.category_id = c.id
+        WHERE
+            a.id = #{articleId}
+    </select>
+
+    <select id="selectComments" parameterType="int" resultType="Comment">
+        SELECT
+            c.id, c.article_id, c.comment, c.post_date
+        FROM
+            comment c
+        WHERE
+            article_id = #{articleId}
+    </select>
+
+    <select id="selectFiles" parameterType="int" resultType="FileVo">
+        SELECT
+            id, article_id, uuid_name, original_name, dir
+        FROM
+            file
+        WHERE
+            article_id = #{articleId}
+    </select>
+
+    <select id="selectFile" parameterType="int" resultType="FileVo">
+        SELECT
+            id, article_id, uuid_name, original_name, dir
+        FROM
+            file
+        WHERE
+            id = #{fileId}
+    </select>
+
+    <select id="countArticle" resultType="int">
+        SELECT
+            count(*)
+        FROM
+            article;
+    </select>
+
+    <select id="countArticleOption" parameterType="Search" resultType="int">
+        SELECT
+            count(*)
+        FROM
+            article a
+        WHERE
+            1=1
+        <if test="keyword != null and keyword != ''">
+            AND
+            (title LIKE CONCAT('%', #{keyword}, '%')
+            OR author LIKE CONCAT('%', #{keyword}, '%')
+            OR content LIKE CONCAT('%', #{keyword}, '%'))
+        </if>
+        <if test="category != null and category != ''">
+            AND a.category_id = #{category}
+        </if>
+        <if test="startDate != null and startDate != ''">
+            <if test="endDate != null and endDate != ''">
+                AND a.post_date BETWEEN #{startDate} AND #{endDate}
+            </if>
+        </if>
+    </select>
+
+    <insert id="insertComment" parameterType="Comment" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO comment
+            (article_id, comment)
+        VALUES
+            (#{articleId}, #{comment})
+    </insert>
+
+    <select id="selectCommentById" parameterType="int" resultType="Comment">
+        SELECT
+            *
+        FROM
+            comment c
+        WHERE
+            c.id = #{id}
+    </select>
+
+    <select id="articlePasswordMatch" parameterType="Article" resultType="int">
+        SELECT
+            count(id)
+        FROM
+            article
+        WHERE
+            id = #{id} AND password = SHA2(#{password},256)
+    </select>
+
+    <update id="updateArticle" parameterType="Article">
+        UPDATE article
+        SET
+            category_id = #{categoryId},
+            title = #{title},
+            author = #{author},
+            content = #{content},
+            edit_date = now()
+        WHERE
+            id = #{id}
+    </update>
+
+    <delete id="deleteFile">
+        DELETE
+        FROM
+            file
+        WHERE
+            id = #{fileId}
+    </delete>
+
+    <insert id="updateViewCount">
+        UPDATE
+            article
+        SET
+            view_count = view_count + 1
+        WHERE
+            id = #{articleId}
+    </insert>
+
+    <delete id="deleteComments" parameterType="int">
+        DELETE
+        FROM
+            comment
+        WHERE
+            article_id = #{articleId}
+    </delete>
+
+    <delete id="deleteFiles" parameterType="int">
+        DELETE
+        FROM
+            file
+        WHERE
+            article_id = #{articleId}
+    </delete>
+
+    <delete id="deleteArticle" parameterType="int">
+        DELETE
+        FROM
+            article
+        WHERE
+            id = #{articleId}
+    </delete>
+</mapper>
