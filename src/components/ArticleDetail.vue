@@ -33,6 +33,11 @@
         <div>
             <ListButton :name="'목록'"></ListButton>
             <RouterLink :to="`/board/modify/${articleId}`">수정</RouterLink>
+            <button type="button" @click="articleDelete">삭제</button>
+            
+            <div v-if="articleId">
+                <PasswordCheck v-model="modalCheck" :articleId="articleId"></PasswordCheck>
+            </div>
         </div>
     </div>
 </template>
@@ -45,12 +50,15 @@ import Comment from './Comment.vue';
 import ListButton from './ListButton.vue';
 import { errorAlert } from '@/api/errorAlert';
 import FileIcon from './FileIcon.vue';
+import PasswordCheck from './PasswordCheck.vue';
+import router from '@/router';
 
 const route = useRoute()
 const articleId = ref(0);
 let article = ref();
 let comments = ref([]);
 let files = null;
+const modalCheck = ref(false);
 
 watch(() => route.params.id,
     (paramId) => {
@@ -68,6 +76,9 @@ onMounted(() => {
         
     }).catch(error => {
         errorAlert(error);
+        router.push({
+            path:'/board/list'
+        })
     })
 })
 
@@ -93,6 +104,10 @@ const downloadFile = async (fileId, originalName) => {
     }).catch(error => {
         errorAlert(error);
     })
+}
+
+const articleDelete = () => {
+    modalCheck.value = !modalCheck.value
 }
 
 </script>

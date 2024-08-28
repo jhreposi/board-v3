@@ -1,10 +1,10 @@
 <template>
     <div>
-        <span v-for="currentPage in lastPage" :key="currentPage"
-                @click="currentPageValue(currentPage)"
+        <span v-for="num in lastPage" :key="num"
+                @click="currentPageValue(num)"
                 style="margin: 5px 5px;"
                 >
-            {{ currentPage }}
+            {{ num }}
         </span>
     </div>
 </template>
@@ -18,8 +18,8 @@ const props = defineProps({
     lastPage: Number
 });
 
-const currentPageValue = (value) => {
-    searchStore.search.pageNum = value
+const currentPageValue = (currentPage) => {
+    searchStore.search.pageNum = currentPage
 }
 </script>
 

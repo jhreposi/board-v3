@@ -1,6 +1,7 @@
 <template>
     <h2>자유게시판 - 목록</h2>
     <SearchBox></SearchBox>
+    <div>게시글 수 - {{ paging.totalCount }}</div>
     <table>
         <thead>
             <tr>
@@ -38,24 +39,27 @@ import ArticleItem from './ArticleItem.vue';
 import Paging from './Paging.vue';
 import SearchBox from './SearchBox.vue';
 import router from '@/router/index.js';
+import { errorAlert } from '@/api/errorAlert.js';
 
 const searchStore = storeSearch();
 let articles = ref([]);
-let paging = null;
+let paging = ref({});
     
 onMounted(() => {
     boardApi.get('/list', {
     }).then(response => {
         articles.value = response.data.articles;
-        paging = response.data.paging;
+        paging.value = {
+            totalCount: response.data.paging.totalCount,
+            lastPage: response.data.paging.lastPage,
+        }
         
     }).catch(error => {
-        console.log(error);
+        errorAlert(error)
     
     });
 });
 
-//조건을 변경해서 검색 누를시   queryString으로
 watch(() => searchStore.search,
     (search) => {
         
@@ -69,21 +73,25 @@ watch(() => searchStore.search,
             }
         }).then(response => {
             articles.value = response.data.articles
-            paging = response.data.paging
+            paging.value = {
+                totalCount: response.data.paging.totalCount,
+                lastPage: response.data.paging.lastPage,
 
+            }
+            
             router.push({
                 path: '/board/list',
                 query: {
-                pageNum: search.pageNum,
-                startDate: search.startDate,
-                endDate: search.endDate,
-                category: search.category,
-                keyword: search.keyword,
+                    pageNum: search.pageNum,
+                    startDate: search.startDate,
+                    endDate: search.endDate,
+                    category: search.category,
+                    keyword: search.keyword,
                 }
             });
             
         }).catch(error => {
-            console.log(error);
+            errorAlert(error)
             
         })
         

@@ -4,39 +4,39 @@
             <div class="form-row">
                 <label for="category">카테고리</label>
                 <select name="categoryId" v-model="category">
-                    <option value="">카테고리 선택</option>
-                    <option value="1">자유</option>
-                    <option value="2">일상</option>
-                    <option value="3">음악</option>
-                    <option value="4">영화</option>
-                    <option value="5">여행</option>
+                    <option value=0>카테고리 선택</option>
+                    <option value=1>자유</option>
+                    <option value=2>일상</option>
+                    <option value=3>음악</option>
+                    <option value=4>영화</option>
+                    <option value=5>여행</option>
                 </select>
             </div>
 
             <div class="form-row">
                 <label for="author">작성자</label>
-                <input type="text" name="author" id="author" v-model="author"/>
+                <input type="text" name="author" v-model="author"/>
             </div>
 
             <div class="form-row">
                 <label for="pass">비밀번호</label>
-                <input type="password" name="password" id="pass" v-model="pass" placeholder="4이상 16미만,영문/특수/숫자포함">
-                <input type="password" id="passCheck">
+                <input type="password" name="password" v-model="pass" placeholder="4이상 16미만,영문/특수/숫자포함">
+                <input type="password" id="passCheck" v-model="passCheck">
             </div>
 
             <div class="form-row">
                 <label for="title">제목</label>
-                <input type="text" name="title" id="title" v-model="title">
+                <input type="text" name="title" v-model="title">
             </div>
 
             <div class="form-row">
                 <label for="content">내용</label>
-                <input type="text" name="content" id="content" v-model="content">
+                <input type="text" name="content" v-model="content">
             </div>
 
             <div class="form-row">
                 <label for="file">파일 첨부</label>
-                <input type="file" name="files" id="file">
+                <input type="file" name="files">
             </div>
 
             <div class="form-buttons">
@@ -55,7 +55,7 @@ import { ref } from 'vue';
 
 //게시글 등록
 const ArticleCreate = () => {
-    if (!checkListConfirm()) {
+    if (matchedFail()) {
         return;
     }
     //axios변경시 불편, 감추기,
@@ -71,39 +71,39 @@ const ArticleCreate = () => {
     })
 }
 const saveForm = ref(null);
-const category = ref('');
+const category = ref(0);
 const author = ref('');
 const title = ref('');
 const content = ref('');
 const pass = ref('');
 const passCheck = ref('');
 
-function checkListConfirm() {
-    if (category.value === '') {
+function matchedFail() {
+    if (category.value === 0) {
         alert('카테고리 선택은 필수 입니다')
-        return false;
+        return true;
     }
-    if (lengthCheck(author, 2, 5)) {
+    if (lengthCheck(author.value, 2, 5)) {
         alert('작성자는 3글자 이상 5글자미만으로 가능합니다')
-        return false;
+        return true;
     }
     if (pass.value !== passCheck.value) {
         alert('비밀번호가 일치하지 않습니다')
-        return false;
+        return true;
     }
     if (!validatePassword(pass.value)) {
         alert('비밀번호 규칙을 확인해주세요')
-        return false;
+        return true;
     }
-    if (lengthCheck(title, 4, 100)) {
+    if (lengthCheck(title.value, 4, 100)) {
         alert('제목은 4글자이상 100글자 미만으로 입력해주세요')
-        return false;
+        return true;
     }
-    if (lengthCheck(content, 4, 2000)) {
+    if (lengthCheck(content.value, 4, 2000)) {
         alert('내용은 4글자이상 2000글자 미만으로 입력해주세요')
-        return false;
+        return true;
     }
-    return true;
+    return false;
 }
 
 function validatePassword(password) {
@@ -112,7 +112,7 @@ function validatePassword(password) {
 }
 
 function lengthCheck(target, up, down) {
-    return target.value.length < up || target.value.length > down;
+    return target.length < up || target.length > down;
 }
 
 

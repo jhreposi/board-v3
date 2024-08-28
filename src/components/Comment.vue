@@ -11,6 +11,7 @@
 
 <script setup>
     import { boardApi } from '@/api/apiInstance';
+import { errorAlert } from '@/api/errorAlert';
 
     const props = defineProps({
         comments: Array,
@@ -30,7 +31,7 @@
             props.comments.push(response.data);
 
         }).catch((error)=> {
-            console.log(error);
+            errorAlert(error)
 
         })
     }
