@@ -7,18 +7,18 @@ export default defineConfig({
   plugins: [
     vue(),
   ],
-  // resolve: {
-  //   alias: {
-  //     '@': fileURLToPath(new URL('./src', import.meta.url))
-  //   }
-  // },
+  resolve: {
+    alias: {
+      '@': fileURLToPath(new URL('./src', import.meta.url))
+    }
+  },
   server: {
     port: 3000,
-    proxy: {
-      '/proxy-test': {
-        target: 'http://localhost:8080',
-        changeOrigin: true
-      }
-    }
+    // proxy: {
+    //   '/api': {
+    //     target: 'http://localhost:8080/api',
+    //     changeOrigin: true
+    //   }
+    // }
   }
 })
